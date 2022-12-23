@@ -241,3 +241,224 @@ function RenderSize(array, actClass) {
 
   return sizeAll;
 }
+
+const cartInner = function (elem) {
+    // console.log(elem.size);
+    return `
+        <div class="cart_c_iner">
+        <div class="cart_c_iner_inner" >
+        <span class="cart_card_colon_one">
+        <img src="${elem.url}" class="cart_card_img">
+        </span>
+        <span class="cart_card_colon_two">
+        <span class="cart_card_iner" data-name="${elem.id}">${elem.name}</span>
+        <span class="cart_card_count"> count: 
+            <span class="cart_card_count_min min" data-name="${elem.id}">-</span>
+            <span class="cart_card_count_numb" data-name="${elem.id}"> 1 </span>
+            <span class="cart_card_count_plus plus" data-name="${
+              elem.id
+            }">+</span> 
+        </span>
+        <span class="cart_card_size_active" data-name="${
+          elem.id
+        }" >size: ${RenderSize(elem.size, elem.activeSize)} </span>
+        <span class="cart_card_price" data-name="${elem.id}">price: 
+        <span class="cart_card_price_numb">${elem.price}</span> $</span>
+        </span>
+        <span class="cart_card_colon_third">
+        <button class="cart_card_cart" data-name="${elem.id}">remove</button>
+        </span>
+        </div>
+        </div>
+        `;
+  };
+  
+  cart1.addEventListener("click", function (elem) {
+    cartall.classList.add("active");
+    let cart_card1 = document.querySelector(".cart_card");
+  
+    let newCart1 = "";
+    newElem.forEach((el) => {
+      newCart1 += cartInner(el);
+    });
+    cart_card1.innerHTML = newCart1;
+  
+    let removeBut = document.querySelectorAll(".cart_card_cart");
+    let removeButton = Array.from(removeBut);
+    // console.log(removeButton);
+  
+    removeButton.forEach((ele) => {
+      ele.addEventListener("click", function (elemen) {
+        let idElem = elemen.target.dataset.name;
+        newElem.forEach((lem) => {
+          // console.log(idElem === lem.id);
+          if (idElem === lem.id) {
+            const index = newElem.indexOf(lem);
+            newElem.splice(index, 1);
+            ele.remove();
+          }
+        });
+        newElemLenght();
+      });
+    });
+  
+    let popupAl = document.querySelectorAll(".cart_c_iner");
+    let popupAll = Array.from(popupAl);
+  
+    function sumAll() {
+      let alCart = document.querySelectorAll(".cart_c_iner");
+      let allCart = Array.from(alCart);
+      let totalSum = document.querySelector(".cart_footer_total_sum");
+      let newSum = 0;
+      allCart.forEach((element) => {
+        let cartElem = element.querySelector(".cart_card_count_numb");
+        let cartElemAll = +cartElem.innerText;
+        let priceAll = element.querySelector(".cart_card_price_numb");
+        let priceAllElem = +priceAll.innerText;
+        let sum = cartElemAll * priceAllElem;
+        newSum += sum;
+      });
+      totalSum.innerText = newSum;
+    }
+  
+    sumAll();
+    popupAll.forEach((elem) => {
+      elem.addEventListener("click", function (event) {
+        if (event.target.classList.contains("min")) {
+          let parentMin = event.target.parentElement;
+          let parentId = event.target.dataset.name;
+          console.log(parentId);
+  
+          let countNumb = parentMin.querySelector(".cart_card_count_numb");
+          let countNumber = +countNumb.innerText;
+  
+          if (countNumber !== 0) {
+            countNumber = countNumber - 1;
+            countNumb.innerText = countNumber;
+            sumAll();
+          }
+          if (countNumber == 0) {
+            elem.classList.add("cardBlur");
+            newElem.forEach((lem) => {
+              if (parentId === lem.id) {
+                const index = newElem.indexOf(lem);
+                newElem.splice(index, 1);
+              }
+              console.log(newElem);
+            });
+          }
+        }
+  
+        if (event.target.classList.contains("plus")) {
+          elem.classList.remove("cardBlur");
+          let parentMin = event.target.parentElement;
+          let countNumb = parentMin.querySelector(".cart_card_count_numb");
+          let countNumber = +countNumb.innerText;
+          countNumber = countNumber + 1;
+          countNumb.innerText = countNumber;
+          sumAll();
+        }
+      });
+    });
+  
+    let cartIn = document.querySelectorAll(".cart_c_iner");
+    let cartInne = Array.from(cartIn);
+    cartInne.forEach((element) => {
+      let cartSize = element.querySelectorAll(".cart_size_active");
+      let cartSizeAll = Array.from(cartSize);
+  
+      cartSizeAll.forEach((elem) => {
+        elem.addEventListener("click", function () {
+          cartSizeAll.forEach((elem) => {
+            elem.classList.remove("activeS");
+          });
+          elem.classList.add("activeS");
+        });
+      });
+    });
+  
+    let order = document.querySelector(".cart_footer_order");
+    order.addEventListener("click", function () {
+      let totalSum = document.querySelector(".cart_footer_total_sum");
+      let sumTotal = totalSum.innerText;
+      let headerOrder = document.querySelector(".header_order");
+      let cartcontent = document.querySelector(".cart_content");
+  
+      function renderName() {
+        let nameProd = " ";
+        newElem.forEach((ele) => {
+          nameProd += `
+            <span class="order_total_prod_inner" data-name="${ele.id}">
+              ${ele.name}
+            </span>`;
+        });
+        return nameProd;
+      }
+      let sizeActive = document.querySelectorAll(".cart_card_size_active");
+      let sizeActive1 = Array.from(sizeActive);
+  
+      function renderSiz() {
+        let nameSize = " ";
+        newElem.forEach((ele) => {
+          // console.log(ele.activeSize);
+          nameSize += `
+            <span class="order_total_size_inner" data-name="${ele.id}">
+              ${ele.activeSize}
+            </span>`;
+        });
+        return nameSize;
+      }
+  
+      function carOrder() {
+        const cardOrderr = `
+              <div class="order_card">
+              <div class="order_card_body">
+              <div class="order_card_content">
+              <p class="order_card_close">&times;</p>
+              <div class="order_card_card"> 
+              <span class="order_total_sum"> SUM: ${sumTotal} $</span>
+              <div class="order_card_elem_all">
+              <div class="order_total_prod" >${renderName()}</div>
+              <div class="order_total_size" >${renderSiz()}</div>
+              </div>
+              <div class="order_form">
+              <input type="email" class="order_card_input" name="email" placeholder="Email Address">
+              <input type="text" class="order_card_input card_input_name" name="fname" placeholder="First Name">
+              </div>
+              <button class="order_card_input_submit">Click Me!</button>
+              </div>
+              </div>
+              </div>
+              </div>     
+              `;
+        headerOrder.innerHTML = cardOrderr;
+      }
+  
+      carOrder();
+      let orderCard = document.querySelector(".order_card");
+      let orderCardClose = document.querySelector(".order_card_close");
+      orderCard.classList.add("active");
+      orderCardClose.addEventListener("click", (e) => {
+        e.preventDefault();
+        orderCard.classList.remove("active");
+      });
+      orderCard.addEventListener("click", (e) => {
+        if (!e.target.closest(".order_card_content")) {
+          orderCard.classList.remove("active");
+        }
+      });
+  
+      let submit = document.querySelector(".order_card_input_submit");
+      function submit1() {
+        submit.addEventListener("click", (event) => {
+          let emailVal = document.querySelector(".order_card_input").value;
+          let firstName = document.querySelector(".card_input_name").value;
+          console.log(emailVal);
+          console.log(firstName);
+          console.log(sumTotal + "$");
+        });
+      }
+      submit1();
+    });
+  });
+ 
