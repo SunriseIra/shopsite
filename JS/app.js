@@ -461,4 +461,4 @@ const cartInner = function (elem) {
       submit1();
     });
   });
- 
+ ///// додано фото корзини
